@@ -8,6 +8,7 @@ const {
   topicData,
   userData,
 } = require("../../db/data/test-data");
+const endpointsData = require("../../endpoints.json");
 
 afterAll(() => {
   return db.end();
@@ -31,6 +32,32 @@ describe("GET /api/topics", () => {
           });
         });
         expect(topics.length).toBe(topicData.length);
+      });
+  });
+});
+
+describe("GET /api", () => {
+  test("200 and return an object with all the endpoints available, with their descriptions", () => {
+    return request(app)
+      .get("/api")
+      .expect(200)
+      .then(({ body }) => {
+        for (let endpoint in body) {
+          const apiEndpoint = body[endpoint];
+          expect(typeof apiEndpoint).toBe("object");
+          expect(typeof endpoint).toBe("string");
+          expect(typeof apiEndpoint.description).toBe("string");
+          expect(apiEndpoint).toMatchObject(endpointsData[endpoint]);
+          if (apiEndpoint.queries) {
+            expect(Array.isArray(apiEndpoint.queries)).toBe(true);
+          }
+          if (apiEndpoint.exampleResponse) {
+            expect(typeof apiEndpoint.exampleResponse).toBe("object");
+          }
+        }
+        expect(Object.keys(body).length).toBe(
+          Object.keys(endpointsData).length
+        );
       });
   });
 });
