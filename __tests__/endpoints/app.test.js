@@ -83,7 +83,7 @@ describe("GET /api/articles/:article_id", () => {
         });
       })
       .catch((err) => {
-        req.status(err.status).send({ msg: err.msg });
+        res.status(err.status).send({ msg: err.msg });
       });
   });
 
@@ -91,8 +91,8 @@ describe("GET /api/articles/:article_id", () => {
     return request(app)
       .get("/api/articles/cat")
       .expect(400)
-      .then(({ error }) => {
-        expect(JSON.parse(error.text).msg).toBe("Bad Request");
+      .then(({ body }) => {
+        expect(body.msg).toBe("Bad Request");
       });
   });
 
@@ -100,8 +100,8 @@ describe("GET /api/articles/:article_id", () => {
     return request(app)
       .get("/api/articles/9999")
       .expect(404)
-      .then(({ error }) => {
-        expect(JSON.parse(error.text).msg).toBe("Not found");
+      .then(({ body }) => {
+        expect(body.msg).toBe("Not found");
       });
   });
 });
@@ -127,6 +127,49 @@ describe("GET /api/articles", () => {
         });
         expect(articles.length).toBe(articleData.length);
         expect(articles).toBeSortedBy("created_at", { descending: true });
+      });
+  });
+});
+
+describe("GET /api/articles/:article_id/comments", () => {
+  test("200 and returns the comments for a determined article", () => {
+    return request(app)
+      .get("/api/articles/1/comments")
+      .expect(200)
+      .then(({ body }) => {
+        const { comments } = body;
+        comments.forEach((comment) => {
+          expect(comment).toMatchObject({
+            comment_id: expect.any(Number),
+            votes: expect.any(Number),
+            created_at: expect.any(String),
+            author: expect.any(String),
+            body: expect.any(String),
+            article_id: expect.any(Number),
+          });
+        });
+        expect(comments).toBeSortedBy("created_at", {
+          descending: true,
+        });
+      });
+  });
+
+  test("status 400, returns Bad Request when the article_id passed it is a different data type", () => {
+    return request(app)
+      .get("/api/articles/dog/comments")
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Bad Request");
+      });
+  });
+
+  test("404, return a message Not found", () => {
+    return request(app)
+      .get("/api/articles/9999999/comments")
+      .expect(404)
+      .then(({ body }) => {
+        const { msg } = body;
+        expect(msg).toBe("Not found");
       });
   });
 });
