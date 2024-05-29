@@ -10,3 +10,13 @@ exports.fetchArticle = (article_id) => {
     }
   });
 };
+
+exports.fetchArticles = () => {
+  return db.query("SELECT * FROM articles;").then(({ rows }) => {
+    if (!rows.length) {
+      return Promise.reject({ status: 404, msg: "Not found" });
+    } else {
+      return rows;
+    }
+  });
+};

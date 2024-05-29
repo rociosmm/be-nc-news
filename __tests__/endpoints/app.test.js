@@ -105,3 +105,27 @@ describe("GET /api/articles/:article_id", () => {
       });
   });
 });
+
+describe("GET /api/articles", () => {
+  test("200 and returns an array of objects", () => {
+    return request(app)
+      .get("/api/articles")
+      .expect(200)
+      .then(({ body }) => {
+        const { articles } = body;
+        articles.forEach((article) => {
+          expect(article).toMatchObject({
+            article_id: expect.any(Number),
+            title: expect.any(String),
+            topic: expect.any(String),
+            author: expect.any(String),
+            body: expect.any(String),
+            created_at: expect.any(String),
+            votes: expect.any(Number),
+            article_img_url: expect.any(String),
+          });
+        });
+        expect(articles.length).toBe(articleData.length);
+      });
+  });
+});
