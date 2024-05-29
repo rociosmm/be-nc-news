@@ -119,13 +119,14 @@ describe("GET /api/articles", () => {
             title: expect.any(String),
             topic: expect.any(String),
             author: expect.any(String),
-            body: expect.any(String),
             created_at: expect.any(String),
             votes: expect.any(Number),
             article_img_url: expect.any(String),
           });
+          expect(typeof article.comment_count).toBe("number");
         });
         expect(articles.length).toBe(articleData.length);
+        expect(articles).toBeSortedBy("created_at", { descending: true });
       });
   });
 });
