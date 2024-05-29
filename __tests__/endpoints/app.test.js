@@ -173,3 +173,24 @@ describe("GET /api/articles/:article_id/comments", () => {
       });
   });
 });
+
+describe("POST /api/articles/:article_id/comments", () => {
+  test("201, and returns the new comment", () => {
+    const newComment = {
+      username: "icellusedkars",
+      body: "Lorem fistrum qué dise usteer fistro de la pradera torpedo a wan nostrud al ataquerl.",
+    };
+
+    return request(app)
+      .post("/api/articles/1/comments")
+      .send(newComment)
+      .expect(201)
+      .then(({ body }) => {
+        console.log("body :>> ", body);
+        expect(body.comment.author).toBe("icellusedkars");
+        expect(body.comment.body).toBe(
+          "Lorem fistrum qué dise usteer fistro de la pradera torpedo a wan nostrud al ataquerl."
+        );
+      });
+  });
+});
