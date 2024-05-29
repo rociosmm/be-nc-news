@@ -3,11 +3,15 @@ const app = express();
 const port = 6565;
 const { getAllTopics } = require("./controllers/topics.controller");
 const { endpointsInfo } = require("./controllers/api.controller");
-const { getArticle } = require("./controllers/articles.controller");
+const {
+  getArticle,
+  getArticles,
+} = require("./controllers/articles.controller");
 
 app.get("/api", endpointsInfo);
 app.get("/api/topics", getAllTopics);
 app.get("/api/articles/:article_id", getArticle);
+app.get("/api/articles", getArticles);
 
 app.use((err, req, res, next) => {
   if (err.code === "22P02") {
