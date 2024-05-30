@@ -13,6 +13,7 @@ const {
   postNewCommentForArticle,
   deleteComment,
 } = require("./controllers/comments.controller");
+const { getAllUsers } = require("./controllers/users.controller");
 
 app.use(express.json());
 
@@ -24,6 +25,7 @@ app.get("/api/articles/:article_id/comments", getCommentsForArticle);
 app.post("/api/articles/:article_id/comments", postNewCommentForArticle);
 app.patch("/api/articles/:article_id", editArticle);
 app.delete("/api/comments/:comment_id", deleteComment);
+app.get("/api/users", getAllUsers);
 
 app.use((err, req, res, next) => {
   if (err.code === "22P02") {
