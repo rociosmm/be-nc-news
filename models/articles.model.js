@@ -11,14 +11,20 @@ exports.fetchArticle = (article_id) => {
   });
 };
 
-exports.fetchArticles = () => {
+exports.fetchArticles = (topic) => {
+  const argumentsArr = [];
+
   const articlesDataToSelect =
     "articles.article_id, articles.title, articles.topic, articles.author, articles.created_at, articles.votes, articles.article_img_url";
   let queryString = ` SELECT ${articlesDataToSelect}, CAST(COUNT(comments.article_id) AS INTEGER) AS comment_count FROM articles
-  LEFT JOIN comments ON articles.article_id = comments.article_id
-  GROUP BY articles.article_id ORDER BY articles.created_at DESC`;
+  LEFT JOIN comments ON articles.article_id = comments.article_id`;
+  if (topic !== undefined) {
+    queryString += ` WHERE topic = $1`;
+    argumentsArr.push(topic);
+  }
+  queryString += ` GROUP BY articles.article_id ORDER BY articles.created_at DESC`;
 
-  return db.query(queryString).then(({ rows }) => {
+  return db.query(queryString, argumentsArr).then(({ rows }) => {
     if (!rows.length) {
       return Promise.reject({ status: 404, msg: "Not found" });
     } else {

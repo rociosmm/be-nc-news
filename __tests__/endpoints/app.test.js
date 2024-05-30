@@ -107,7 +107,7 @@ describe("GET /api/articles/:article_id", () => {
 });
 
 describe("GET /api/articles", () => {
-  test("200 and returns an array of objects", () => {
+  test("200 and returns an array of article objects", () => {
     return request(app)
       .get("/api/articles")
       .expect(200)
@@ -127,6 +127,27 @@ describe("GET /api/articles", () => {
         });
         expect(articles.length).toBe(articleData.length);
         expect(articles).toBeSortedBy("created_at", { descending: true });
+      });
+  });
+});
+describe("GET /api/articles?topic=paper", () => {
+  test("200 and returns an array with paper topic articles", () => {
+    return request(app)
+      .get("/api/articles?topic=cats")
+      .expect(200)
+      .then(({ body }) => {
+        const { articles } = body;
+        expect(articles).toHaveLength(1);
+        expect(articles[0].topic).toBe("cats");
+      });
+  });
+
+  test("404 and returns Not found when there is not articles for a determined topic", () => {
+    return request(app)
+      .get("/api/articles?topic=animals")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Not found");
       });
   });
 });
