@@ -1,4 +1,8 @@
-const { fetchArticles } = require("../models/articles.model");
+const {
+  fetchArticles,
+  patchArticle,
+  checkArticleExists,
+} = require("../models/articles.model");
 const { fetchArticle } = require("../models/articles.model");
 
 exports.getArticle = (req, res, next) => {
