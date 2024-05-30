@@ -19,3 +19,24 @@ exports.getCommentsForArticle = (req, res, next) => {
     })
     .catch(next);
 };
+
+exports.postNewCommentForArticle = (req, res, next) => {
+  const { article_id } = req.params;
+  const comment = req.body;
+
+  const promisesArr = [
+    postComment(article_id, comment),
+    // checkArticleExists(article_id),
+  ];
+
+  Promise.all(promisesArr)
+    .then((resolvedPromises) => {
+      //console.log("resolvedPromises :>> ", resolvedPromises);
+      const commentAdded = resolvedPromises[0];
+      res.status(201).send({ comment: commentAdded });
+    })
+    .catch((err) => {
+      console.log("err after promises :>> ", err);
+      next(err);
+    });
+};
