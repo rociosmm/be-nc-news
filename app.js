@@ -23,6 +23,7 @@ app.get("/api/articles", getArticles);
 app.get("/api/articles/:article_id/comments", getCommentsForArticle);
 app.post("/api/articles/:article_id/comments", postNewCommentForArticle);
 app.patch("/api/articles/:article_id", editArticle);
+app.delete("/api/comments/:comment_id", deleteComment);
 
 app.use((err, req, res, next) => {
   if (err.code === "22P02") {

@@ -15,3 +15,13 @@ exports.postComment = (article_id, comment) => {
     return rows[0];
   });
 };
+
+exports.delCommentFromDB = (comment_id) => {
+  const queryString = `DELETE FROM comments WHERE comment_id = $1 RETURNING *`;
+  return db.query(queryString, [comment_id]).then(({ rows }) => {
+    if (!rows.length) {
+      return Promise.reject({ status: 404, msg: "Not found" });
+    }
+    return rows[0];
+  });
+};
