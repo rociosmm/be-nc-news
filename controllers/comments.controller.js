@@ -38,7 +38,6 @@ exports.postNewCommentForArticle = (req, res, next) => {
 
 exports.deleteComment = (req, res, next) => {
   const { comment_id } = req.params;
-  console.log("comment_id :>> ", comment_id);
   delCommentFromDB(comment_id)
     .then((deletedComment) => {
       //if (deletedComment) {
