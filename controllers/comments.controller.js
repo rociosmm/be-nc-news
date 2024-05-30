@@ -1,5 +1,9 @@
 const { checkArticleExists } = require("../models/articles.model");
-const { fetchComments } = require("../models/comments.model");
+const {
+  fetchComments,
+  postComment,
+  delCommentFromDB,
+} = require("../models/comments.model");
 
 exports.getCommentsForArticle = (req, res, next) => {
   const { article_id } = req.params;
@@ -14,4 +18,25 @@ exports.getCommentsForArticle = (req, res, next) => {
       res.status(200).send({ comments });
     })
     .catch(next);
+};
+
+exports.postNewCommentForArticle = (req, res, next) => {
+  const { article_id } = req.params;
+  const comment = req.body;
+
+  const promisesArr = [
+    postComment(article_id, comment),
+    // checkArticleExists(article_id),
+  ];
+
+  Promise.all(promisesArr)
+    .then((resolvedPromises) => {
+      //console.log("resolvedPromises :>> ", resolvedPromises);
+      const commentAdded = resolvedPromises[0];
+      res.status(201).send({ comment: commentAdded });
+    })
+    .catch((err) => {
+      console.log("err after promises :>> ", err);
+      next(err);
+    });
 };

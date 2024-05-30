@@ -57,5 +57,21 @@
         }
       ]
     }
+  },
+  "POST /api/articles/:article_id/comments": {
+    "description": "allows to post a comment for a determined article_id",
+    "queries": [],
+    "exampleResponse": {
+      "comment": [
+        {
+          "comment_id": 19,
+          "body": "Lorem fistrum qué dise usteer fistro de la pradera torpedo a wan nostrud al ataquerl.",
+          "article_id": 1,
+          "author": "icellusedkars",
+          "votes": 0,
+          "created_at": "2024-05-29T20:34:14.026Z"
+        }
+      ]
+    }
   }
 }

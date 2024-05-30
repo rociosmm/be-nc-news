@@ -87,7 +87,7 @@ describe("GET /api/articles/:article_id", () => {
       });
   });
 
-  test("status 400, returns Bad Request when the article_id passed it is a different data type", () => {
+  test("400, returns Bad Request when the article_id passed it is a different data type", () => {
     return request(app)
       .get("/api/articles/cat")
       .expect(400)
@@ -170,6 +170,44 @@ describe("GET /api/articles/:article_id/comments", () => {
       .then(({ body }) => {
         const { msg } = body;
         expect(msg).toBe("Not found");
+      });
+  });
+});
+
+describe("POST /api/articles/:article_id/comments", () => {
+  test("201, and returns the new comment", () => {
+    const newComment = {
+      username: "icellusedkars",
+      body: "Lorem fistrum qué dise usteer fistro de la pradera torpedo a wan nostrud al ataquerl.",
+    };
+
+    return request(app)
+      .post("/api/articles/1/comments")
+      .send(newComment)
+      .expect(201)
+      .then(({ body }) => {
+        const { comment } = body;
+        //console.log("body :>> ", comment);
+        expect(comment.author).toBe("icellusedkars");
+        expect(comment.body).toBe(
+          "Lorem fistrum qué dise usteer fistro de la pradera torpedo a wan nostrud al ataquerl."
+        );
+      });
+  });
+
+  // post comment
+  test("404, returns error when article_id doesn't exist in the articles table", () => {
+    const newComment = {
+      username: "icellusedkars",
+      body: "Lorem fistrum qué dise usteer fistro de la pradera torpedo a wan nostrud al ataquerl.",
+    };
+    return request(app)
+      .post("/api/articles/9999/comments")
+      .send(newComment)
+      .expect(404)
+      .then(({ body }) => {
+        console.log("body :>> ", body);
+        expect(body.msg).toBe("Not found");
       });
   });
 });
