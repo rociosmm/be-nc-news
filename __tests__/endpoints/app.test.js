@@ -69,7 +69,6 @@ describe("GET /api/articles/:article_id", () => {
       .expect(200)
       .then(({ body }) => {
         const { article } = body;
-        console.log("article :>> ", article);
         expect(article).toMatchObject({
           article_id: 1,
           title: "Living in the shadow of a great man",
@@ -93,7 +92,6 @@ describe("GET /api/articles/:article_id", () => {
       .expect(200)
       .then(({ body }) => {
         const { article } = body;
-        console.log("article :>> ", article);
         expect(article).toMatchObject({
           comments_count: 11,
         });
