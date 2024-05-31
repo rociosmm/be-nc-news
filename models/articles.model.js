@@ -1,8 +1,12 @@
 const db = require("../db/connection");
 
 exports.fetchArticle = (article_id) => {
-  let queryString = "SELECT * FROM articles WHERE article_id = $1";
-  return db.query(queryString + ";", [article_id]).then(({ rows }) => {
+  const queryString = `SELECT articles.*, CAST(COUNT(comments.article_id) AS INTEGER) AS comments_count FROM articles
+  JOIN comments ON articles.article_id = comments.article_id
+  WHERE articles.article_id = $1
+  GROUP BY articles.article_id`;
+
+  return db.query(queryString, [article_id]).then(({ rows }) => {
     if (rows.length === 0) {
       return Promise.reject({ status: 404, msg: "Not found" });
     } else {
