@@ -19,8 +19,8 @@ exports.getArticle = (req, res, next) => {
 exports.getArticles = (req, res, next) => {
   const { topic } = req.query;
   fetchArticles(topic)
-    .then((rows) => {
-      res.status(200).send({ articles: rows });
+    .then((articles) => {
+      res.status(200).send({ articles });
     })
     .catch((err) => {
       next(err);
