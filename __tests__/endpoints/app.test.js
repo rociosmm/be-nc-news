@@ -79,7 +79,22 @@ describe("GET /api/articles/:article_id", () => {
           created_at: "2020-07-09T20:11:00.000Z",
           votes: 100,
           article_img_url:
-            "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
+            "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700"
+        });
+      })
+      .catch((err) => {
+        res.status(err.status).send({ msg: err.msg });
+      });
+  });
+
+  test("status 200, return the object article", () => {
+    return request(app)
+      .get("/api/articles/1")
+      .expect(200)
+      .then(({ body }) => {
+        const { article } = body;
+        console.log("article :>> ", article);
+        expect(article).toMatchObject({
           comments_count: 11,
         });
       })
