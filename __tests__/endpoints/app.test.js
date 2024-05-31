@@ -42,8 +42,9 @@ describe("GET /api", () => {
       .get("/api")
       .expect(200)
       .then(({ body }) => {
-        for (let endpoint in body) {
-          const apiEndpoint = body[endpoint];
+        const { endpoints } = body;
+        for (let endpoint in endpoints) {
+          const apiEndpoint = endpoints[endpoint];
           expect(typeof apiEndpoint).toBe("object");
           expect(typeof endpoint).toBe("string");
           expect(typeof apiEndpoint.description).toBe("string");
@@ -55,7 +56,7 @@ describe("GET /api", () => {
             expect(typeof apiEndpoint.exampleResponse).toBe("object");
           }
         }
-        expect(Object.keys(body).length).toBe(
+        expect(Object.keys(endpoints).length).toBe(
           Object.keys(endpointsData).length
         );
       });

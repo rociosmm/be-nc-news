@@ -1,11 +1,9 @@
-const fs = require("fs/promises");
+const endpointsData = require("../endpoints.json");
 
 exports.endpointsInfo = (req, res, next) => {
-  fs.readFile("./endpoints.json", "utf-8")
-    .then((data) => {
-      res.status(200).send(JSON.parse(data));
-    })
-    .catch((err) => {
-      next(err);
-    });
+  if (endpointsData) {
+    res.status(200).send({ endpoints: endpointsData });
+  } else {
+    res.status(404).send({ msg: "Not found" });
+  }
 };
