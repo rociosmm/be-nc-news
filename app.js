@@ -17,6 +17,8 @@ const { getAllUsers } = require("./controllers/users.controller");
 
 app.use(express.json());
 
+app.get("/", (req, res) => res.redirect("/api"));
+
 app.get("/api", endpointsInfo);
 app.get("/api/topics", getAllTopics);
 app.get("/api/articles/:article_id", getArticle);
