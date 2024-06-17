@@ -1,5 +1,6 @@
 const express = require("express");
 const app = express();
+const cors = require("cors");
 const port = 6565;
 const { getAllTopics } = require("./controllers/topics.controller");
 const { endpointsInfo } = require("./controllers/api.controller");
@@ -15,6 +16,7 @@ const {
 } = require("./controllers/comments.controller");
 const { getAllUsers } = require("./controllers/users.controller");
 
+app.use(cors());
 app.use(express.json());
 
 app.get("/", (req, res) => res.redirect("/api"));
