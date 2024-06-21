@@ -9,6 +9,7 @@ exports.getArticle = (req, res, next) => {
   const { article_id } = req.params;
   fetchArticle(article_id)
     .then((article) => {
+      console.log('article :>> ', article);
       res.status(200).send({ article });
     })
     .catch((err) => {
@@ -17,8 +18,8 @@ exports.getArticle = (req, res, next) => {
 };
 
 exports.getArticles = (req, res, next) => {
-  const { topic } = req.query;
-  fetchArticles(topic)
+  const { sort_by, order, topic } = req.query;
+  fetchArticles(sort_by, order, topic)
     .then((articles) => {
       res.status(200).send({ articles });
     })
