@@ -9,6 +9,7 @@ const {
   userData,
 } = require("../../db/data/test-data");
 const endpointsData = require("../../endpoints.json");
+const Test = require("supertest/lib/test");
 
 afterAll(() => {
   return db.end();
@@ -438,3 +439,43 @@ describe("GET /api/users/:username", () => {
       });
   });
 });
+
+describe('PATCH /api/comments/:comment_id ', () => { 
+  test("201 and returns the updated comment", () => {
+    return request(app)
+      .patch("/api/comments/1")
+      .send({ inc_votes: 5 })
+      .expect(201)
+      .then(({ body }) => {
+        const { comment } = body;
+        expect(comment).toMatchObject({
+          comment_id: 1,
+          body: "Oh, I've got compassion running out of my nose, pal! I'm the Sultan of Sentiment!",
+          votes: 21,
+          author: "butter_bridge",
+          article_id: 9,
+          created_at: "2020-04-06T12:17:00.000Z"
+        });
+      })
+  });
+  test("400, returns Bad Request when the data type of the comment_id is not a number", () => {
+    return request(app)
+      .patch("/api/comments/turtle")
+      .send({ inc_votes: 5 })
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Bad Request");
+      });
+  });
+
+  test("404, returns Not found if the comment_id does not exists in comments table", () => {
+    return request(app)
+      .patch("/api/comments/555")
+      .send({ inc_votes: 5 })
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Not found");
+      });
+  });
+})
+ 
