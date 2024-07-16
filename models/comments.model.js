@@ -25,3 +25,17 @@ exports.delCommentFromDB = (comment_id) => {
     return rows[0];
   });
 };
+
+exports.editComment = (comment_id, inc_votes) => {
+  const votesQuery = `SELECT votes FROM comments WHERE comment_id = $2`;
+  const UpdQueryString = `UPDATE comments SET votes = ($1 + (${votesQuery})) WHERE comment_id = $2 RETURNING *`;
+  console.log("UpdQueryString :>> ", UpdQueryString);
+  return db.query(UpdQueryString, [inc_votes, comment_id]).then(({rows}) => {
+    console.log("data update comment model :>> ", rows);
+    if (!rows.length) {
+      return Promise.reject({ status: 404, msg: "Not found" });
+    } else {
+      return rows[0];
+    }
+  });
+};

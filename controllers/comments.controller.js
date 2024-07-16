@@ -3,6 +3,7 @@ const {
   fetchComments,
   postComment,
   delCommentFromDB,
+  editComment,
 } = require("../models/comments.model");
 
 exports.getCommentsForArticle = (req, res, next) => {
@@ -43,6 +44,18 @@ exports.deleteComment = (req, res, next) => {
       //if (deletedComment) {
       res.status(204).send({ msg: "No Content" });
       // }
+    })
+    .catch((err) => {
+      next(err);
+    });
+};
+
+exports.patchComment = (req, res, next) => {
+  const { comment_id } = req.params;
+  const { inc_votes } = req.body;
+  editComment(comment_id, inc_votes)
+    .then((comment) => {
+      res.status(201).send({ comment });
     })
     .catch((err) => {
       next(err);
