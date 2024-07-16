@@ -412,3 +412,29 @@ describe("GET /api/articles", () => {
       });
   });
 });
+
+describe("GET /api/users/:username", () => {
+  test("status 200, return the object user", () => {
+    return request(app)
+      .get("/api/users/icellusedkars")
+      .expect(200)
+      .then(({ body }) => {
+        const { user } = body;
+        expect(user).toMatchObject({
+          username: "icellusedkars",
+          name: "sam",
+          avatar_url:
+            "https://avatars2.githubusercontent.com/u/24604688?s=460&v=4",
+        });
+      });
+  });
+
+  test("404, return Not Found when the username passed it is not on the database", () => {
+    return request(app)
+      .get(`/api/users/cat`)
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Not found");
+      });
+  });
+});

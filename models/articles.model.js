@@ -42,8 +42,6 @@ exports.fetchArticles = (sort_by = "created_at", order = "DESC", topic) => {
   }
   queryString += ` GROUP BY articles.article_id ORDER BY ${sort_by} ${order}`;
 
-  console.log("queryString :>> ", queryString);
-
   return db.query(queryString, argumentsArr).then(({ rows }) => {
     if (!rows.length) {
       return Promise.reject({ status: 404, msg: "Not found" });
