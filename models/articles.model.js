@@ -47,16 +47,13 @@ exports.fetchArticles = (
   LEFT JOIN comments ON articles.article_id = comments.article_id`;
 
   if (topic !== undefined && author !== undefined) {
-    console.log('topic, author :>> ', topic, author);
     queryString += ` WHERE articles.topic = $1 AND articles.author = $2`;
     argumentsArr.push(topic);
     argumentsArr.push(author);
   } else if (topic !== undefined) {
-    console.log("topic :>> ", topic);
     queryString += ` WHERE articles.topic = $1`;
     argumentsArr.push(topic);
   } else if (author !== undefined) {
-    console.log("author :>> ", author);
     queryString += ` WHERE articles.author = $1`;
     argumentsArr.push(author);
   }
@@ -65,8 +62,6 @@ exports.fetchArticles = (
     limit * (p - 1)
   }`;
 
-  console.log('queryString author :>> ', queryString);
-  console.log('argumentsArr :>> ', argumentsArr);
   return db.query(queryString, argumentsArr).then(({ rows }) => {
     if (!rows.length) {
       return Promise.reject({ status: 404, msg: "Not found" });

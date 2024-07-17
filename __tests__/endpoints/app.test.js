@@ -126,7 +126,6 @@ describe("GET /api/articles", () => {
       .expect(200)
       .then(({ body }) => {
         const { articles } = body;
-        console.log("articles[0] :>> ", articles[0]);
         articles.forEach((article) => {
           expect(article).toMatchObject({
             article_id: expect.any(Number),
@@ -669,8 +668,6 @@ describe("GET /api/articles?author=grumpy19", () => {
       .expect(200)
       .then(({ body }) => {
         const { articles } = body;
-        console.log("articles icellusedkars :>> ", articles);
-        //expect(articles).toHaveLength(1);
         expect(articles[0].author).toBe("icellusedkars");
       });
   });
@@ -680,8 +677,6 @@ describe("GET /api/articles?author=grumpy19", () => {
       .expect(200)
       .then(({ body }) => {
         const { articles } = body;
-        console.log("articles icellusedkars :>> ", articles);
-        //expect(articles).toHaveLength(1);
         expect(articles[0].author).toBe("icellusedkars");
         expect(articles[0].topic).toBe("mitch");
       });
@@ -695,12 +690,4 @@ describe("GET /api/articles?author=grumpy19", () => {
       });
   });
 
-  /* test("404 and returns Not found when there is not articles for a determined topic", () => {
-    return request(app)
-      .get("/api/articles?topic=animals")
-      .expect(404)
-      .then(({ body }) => {
-        expect(body.msg).toBe("Not found");
-      });
-  }); */
 });
