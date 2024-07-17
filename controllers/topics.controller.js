@@ -1,4 +1,4 @@
-const { fetchTopics } = require("../models/topics.model");
+const { fetchTopics, addTopic } = require("../models/topics.model");
 
 exports.getAllTopics = (req, res, next) => {
   fetchTopics()
@@ -10,4 +10,13 @@ exports.getAllTopics = (req, res, next) => {
     .catch((err) => {
       next(err);
     });
+};
+
+exports.postTopic = (req, res, next) => {
+  const topic = req.body;
+  addTopic(topic).then((topic) => {
+    res.status(201).send({topic})
+  }).catch(err => {
+    next(err)
+  });
 };

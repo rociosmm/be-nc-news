@@ -142,5 +142,14 @@
         }
       ]
     }
+  },
+  "POST /api/topics": {
+    "description": "allows to post a new topic",
+    "queries": [],
+    "exampleResponse": {
+      "topic": [
+        { "slug": "languages", "description": "Coding languages as JS, PHP..." }
+      ]
+    }
   }
 }
