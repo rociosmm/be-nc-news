@@ -16,7 +16,13 @@ exports.fetchArticle = (article_id) => {
   });
 };
 
-exports.fetchArticles = (sort_by = "created_at", order = "DESC", topic) => {
+exports.fetchArticles = (
+  sort_by = "created_at",
+  order = "DESC",
+  topic,
+  limit = 10,
+  p = 1
+) => {
   const allowedSortCols = ["created_at", "comment_count", "votes"];
   const allowedOrder = ["ASC", "DESC"];
   const argumentsArr = [];
@@ -26,7 +32,9 @@ exports.fetchArticles = (sort_by = "created_at", order = "DESC", topic) => {
 
   if (
     !allowedSortCols.includes(sort_by) ||
-    !allowedOrder.includes(order.toUpperCase())
+    !allowedOrder.includes(order.toUpperCase()) ||
+    !Number(limit) ||
+    !Number(p)
   ) {
     return Promise.reject({
       status: 400,
@@ -41,7 +49,9 @@ exports.fetchArticles = (sort_by = "created_at", order = "DESC", topic) => {
     queryString += ` WHERE topic = $1`;
     argumentsArr.push(topic);
   }
-  queryString += ` GROUP BY articles.article_id ORDER BY ${sort_by} ${order}`;
+  queryString += ` GROUP BY articles.article_id ORDER BY ${sort_by} ${order} LIMIT ${limit} OFFSET ${
+    limit * (p - 1)
+  }`;
 
   return db.query(queryString, argumentsArr).then(({ rows }) => {
     if (!rows.length) {

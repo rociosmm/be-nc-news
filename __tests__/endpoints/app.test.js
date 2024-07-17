@@ -535,3 +535,53 @@ describe("POST /api/articles", () => {
       });
   });
 });
+
+describe("GET /api/articles?limit=5&p=2", () => {
+  test("200, returns an array with 5 articles", () => {
+    return request(app)
+      .get("/api/articles?limit=5")
+      .expect(200)
+      .then(({ body }) => {
+        const { articles } = body;
+        const { total_count } = body;
+        expect(articles).toHaveLength(5);
+      });
+  });
+
+  test("200, returns an array with 5 articles for the second page (offset of 5)", () => {
+    return request(app)
+      .get("/api/articles?limit=5&p=2")
+      .expect(200)
+      .then(({ body }) => {
+        const { articles } = body;
+        expect(articles).toHaveLength(5);
+      });
+  });
+
+  test("400, return Bad Request if the data type for the limit it is incorrect", () => {
+    return request(app)
+      .get("/api/articles?limit=cat")
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Bad Request");
+      });
+  });
+
+  test("400, return Bad Request if the data type for the page it is incorrect", () => {
+    return request(app)
+      .get("/api/articles?limit=3&p=page")
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Bad Request");
+      });
+  });
+
+  test("404, return Not found if the page is too big that there is not articles on it", () => {
+    return request(app)
+      .get("/api/articles?limit=3&p=200")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Not found");
+      });
+  });
+});
