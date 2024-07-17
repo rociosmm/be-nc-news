@@ -19,8 +19,8 @@ exports.getArticle = (req, res, next) => {
 };
 
 exports.getArticles = (req, res, next) => {
-  const { sort_by, order, topic, limit, p } = req.query;
-  fetchArticles(sort_by, order, topic, limit, p)
+  const { sort_by, order, topic, author, limit, p } = req.query;
+  fetchArticles(sort_by, order, topic, author, limit, p)
     .then((articles) => {
       const total_count = articles.length;
       res.status(200).send({ articles, total_count });

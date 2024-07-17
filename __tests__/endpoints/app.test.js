@@ -126,6 +126,7 @@ describe("GET /api/articles", () => {
       .expect(200)
       .then(({ body }) => {
         const { articles } = body;
+        console.log("articles[0] :>> ", articles[0]);
         articles.forEach((article) => {
           expect(article).toMatchObject({
             article_id: expect.any(Number),
@@ -658,5 +659,48 @@ describe("DELETE /api/articles/:article_id", () => {
       .then(({ body }) => {
         expect(body.msg).toBe("Not found");
       });
-  }); 
+  });
+});
+
+describe("GET /api/articles?author=grumpy19", () => {
+  test("200 and returns an array with the articles for the user", () => {
+    return request(app)
+      .get("/api/articles?author=icellusedkars")
+      .expect(200)
+      .then(({ body }) => {
+        const { articles } = body;
+        console.log("articles icellusedkars :>> ", articles);
+        //expect(articles).toHaveLength(1);
+        expect(articles[0].author).toBe("icellusedkars");
+      });
+  });
+  test("200 and returns an array with the articles for the user", () => {
+    return request(app)
+      .get("/api/articles?topic=mitch&author=icellusedkars")
+      .expect(200)
+      .then(({ body }) => {
+        const { articles } = body;
+        console.log("articles icellusedkars :>> ", articles);
+        //expect(articles).toHaveLength(1);
+        expect(articles[0].author).toBe("icellusedkars");
+        expect(articles[0].topic).toBe("mitch");
+      });
+  });
+  test("404 and returns Not found when a user does not have articles", () => {
+    return request(app)
+      .get("/api/articles?author=grumpy19")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Not found");
+      });
+  });
+
+  /* test("404 and returns Not found when there is not articles for a determined topic", () => {
+    return request(app)
+      .get("/api/articles?topic=animals")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Not found");
+      });
+  }); */
 });

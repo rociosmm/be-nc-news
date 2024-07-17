@@ -20,6 +20,7 @@ exports.fetchArticles = (
   sort_by = "created_at",
   order = "DESC",
   topic,
+  author,
   limit = 10,
   p = 1
 ) => {
@@ -45,14 +46,27 @@ exports.fetchArticles = (
   let queryString = ` SELECT ${articlesDataToSelect}, CAST(COUNT(comments.article_id) AS INTEGER) AS comment_count FROM articles
   LEFT JOIN comments ON articles.article_id = comments.article_id`;
 
-  if (topic !== undefined) {
-    queryString += ` WHERE topic = $1`;
+  if (topic !== undefined && author !== undefined) {
+    console.log('topic, author :>> ', topic, author);
+    queryString += ` WHERE articles.topic = $1 AND articles.author = $2`;
     argumentsArr.push(topic);
+    argumentsArr.push(author);
+  } else if (topic !== undefined) {
+    console.log("topic :>> ", topic);
+    queryString += ` WHERE articles.topic = $1`;
+    argumentsArr.push(topic);
+  } else if (author !== undefined) {
+    console.log("author :>> ", author);
+    queryString += ` WHERE articles.author = $1`;
+    argumentsArr.push(author);
   }
+
   queryString += ` GROUP BY articles.article_id ORDER BY ${sort_by} ${order} LIMIT ${limit} OFFSET ${
     limit * (p - 1)
   }`;
 
+  console.log('queryString author :>> ', queryString);
+  console.log('argumentsArr :>> ', argumentsArr);
   return db.query(queryString, argumentsArr).then(({ rows }) => {
     if (!rows.length) {
       return Promise.reject({ status: 404, msg: "Not found" });
@@ -127,5 +141,5 @@ exports.removeArticle = (article_id) => {
     }
 
     return rows[0];
-  })
+  });
 };
