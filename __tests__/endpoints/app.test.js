@@ -440,7 +440,7 @@ describe("GET /api/users/:username", () => {
   });
 });
 
-describe('PATCH /api/comments/:comment_id ', () => { 
+describe("PATCH /api/comments/:comment_id ", () => {
   test("201 and returns the updated comment", () => {
     return request(app)
       .patch("/api/comments/1")
@@ -454,9 +454,9 @@ describe('PATCH /api/comments/:comment_id ', () => {
           votes: 21,
           author: "butter_bridge",
           article_id: 9,
-          created_at: "2020-04-06T12:17:00.000Z"
+          created_at: "2020-04-06T12:17:00.000Z",
         });
-      })
+      });
   });
   test("400, returns Bad Request when the data type of the comment_id is not a number", () => {
     return request(app)
@@ -477,5 +477,61 @@ describe('PATCH /api/comments/:comment_id ', () => {
         expect(body.msg).toBe("Not found");
       });
   });
-})
- 
+});
+
+describe("POST /api/articles", () => {
+  test("201, returns the new article posted", () => {
+    const newArticle = {
+      author: "butter_bridge",
+      title: "NC is almost ready",
+      body: "NC news is blog where you can find articles related to Northcoders",
+      topic: "paper",
+      article_img_url: "https://placehold.co/600x400/png",
+    };
+
+    return request(app)
+      .post("/api/articles")
+      .send(newArticle)
+      .expect(201)
+      .then(({ body }) => {
+        const { article } = body;
+        expect(article.author).toBe("butter_bridge");
+        expect(article.title).toBe("NC is almost ready");
+      });
+  });
+
+  test("400, returns the Bad Request when there is missing fields", () => {
+    const newBadArticle = {
+      author: "butter_bridge",
+      body: "NC news is blog where you can find articles related to Northcoders",
+      topic: "paper",
+      article_img_url: "https://placehold.co/600x400/png",
+    };
+
+    return request(app)
+      .post("/api/articles")
+      .send(newBadArticle)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Not enough data");
+      });
+  });
+
+  test("400, returns the Bad Request when data type for the post fields is incorrect", () => {
+    const newBadArticle = {
+      author: "butter_bridge",
+      title: "Wrong data sent",
+      body: "NC news is blog where you can find articles related to Northcoders",
+      topic: 1,
+      article_img_url: "https://placehold.co/600x400/png",
+    };
+
+    return request(app)
+      .post("/api/articles")
+      .send(newBadArticle)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Bad Request: wrong data");
+      });
+  });
+});

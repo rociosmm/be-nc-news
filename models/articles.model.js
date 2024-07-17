@@ -1,3 +1,4 @@
+const format = require("pg-format");
 const db = require("../db/connection");
 
 exports.fetchArticle = (article_id) => {
@@ -71,4 +72,38 @@ exports.patchArticle = (article_id, inc_votes) => {
 
     return rows[0];
   });
+};
+
+exports.newArticle = ({
+  author,
+  title,
+  body,
+  topic,
+  article_img_url = "https://shorturl.at/bGYRB",
+}) => {
+  if (!author || !title || !body || !topic) {
+    return Promise.reject({ status: 400, msg: "Not enough data" });
+  } else if (typeof topic !== "string" || typeof author !== "string") {
+    return Promise.reject({ status: 400, msg: "Bad Request: wrong data" });
+  }
+
+  return db
+    .query(`SELECT * FROM users WHERE username = $1`, [author])
+    .then(({ rows }) => {
+      if (!rows.length) {
+        return Promise.reject({
+          status: 400,
+          msg: "Bad Request: author doesn't exist",
+        });
+      } else {
+        const postQueryString = format(
+          `INSERT INTO articles (author, title, body, topic, article_img_url) VALUES (%L) RETURNING *`,
+          [author, title, body, topic, article_img_url]
+        );
+
+        return db.query(postQueryString).then(({ rows }) => {
+          return rows[0];
+        });
+      }
+    });
 };
