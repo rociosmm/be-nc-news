@@ -3,6 +3,7 @@ const {
   patchArticle,
   checkArticleExists,
   newArticle,
+  removeArticle,
 } = require("../models/articles.model");
 const { fetchArticle } = require("../models/articles.model");
 
@@ -46,6 +47,17 @@ exports.postArticle = (req, res, next) => {
   newArticle(postBody)
     .then((article) => {
       res.status(201).send({ article });
+    })
+    .catch((err) => {
+      next(err);
+    });
+};
+
+exports.deleteArticle = (req, res, next) => {
+  const { article_id } = req.params;
+  removeArticle(article_id)
+    .then((deletedArticle) => {
+      res.status(204).send({ msg: "No content" });
     })
     .catch((err) => {
       next(err);

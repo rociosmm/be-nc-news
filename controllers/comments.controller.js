@@ -41,9 +41,7 @@ exports.deleteComment = (req, res, next) => {
   const { comment_id } = req.params;
   delCommentFromDB(comment_id)
     .then((deletedComment) => {
-      //if (deletedComment) {
       res.status(204).send({ msg: "No Content" });
-      // }
     })
     .catch((err) => {
       next(err);
