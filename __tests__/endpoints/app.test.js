@@ -632,3 +632,31 @@ describe("POST /api/topics", () => {
       });
   });
 });
+
+describe("DELETE /api/articles/:article_id", () => {
+  test("204, and returns No Content", () => {
+    return request(app).delete("/api/articles/3").expect(204);
+    /* It is not need it, 204 don't send anything
+      .then(({ res }) => {
+        expect(res.statusMessage).toBe("No Content");
+      }); */
+  });
+
+  test("400, returns Bad Request when the article_id is not a valid data type", () => {
+    return request(app)
+      .delete("/api/articles/cat")
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Bad Request");
+      });
+  });
+
+  test("404, returns Not found when article_id is a valid type but does not exists in the comments table", () => {
+    return request(app)
+      .delete("/api/articles/5555")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Not found");
+      });
+  }); 
+});

@@ -29,7 +29,6 @@ exports.addTopic = ({ slug, description }) => {
           .then(({ rows }) => {
             return rows[0];
           })
-          .catch((err) => console.log("err posting topic :>> ", err));
       } else {
         return Promise.reject({
           status: 400,
