@@ -65,7 +65,7 @@ describe("GET /api", () => {
 });
 
 describe("GET /api/articles/:article_id", () => {
-  test("status 200, return the object article", () => {
+  test("status 200, returns the object article", () => {
     return request(app)
       .get("/api/articles/1")
       .expect(200)
@@ -85,7 +85,7 @@ describe("GET /api/articles/:article_id", () => {
       });
   });
 
-  test("status 200, return the object article", () => {
+  test("status 200, returns the object article", () => {
     return request(app)
       .get("/api/articles/1")
       .expect(200)
@@ -197,7 +197,7 @@ describe("GET /api/articles/:article_id/comments", () => {
       });
   });
 
-  test("404, return a message Not found", () => {
+  test("404, returns a message Not found", () => {
     return request(app)
       .get("/api/articles/9999999/comments")
       .expect(404)
@@ -415,7 +415,7 @@ describe("GET /api/articles", () => {
 });
 
 describe("GET /api/users/:username", () => {
-  test("status 200, return the object user", () => {
+  test("200, returns the object user", () => {
     return request(app)
       .get("/api/users/icellusedkars")
       .expect(200)
@@ -430,7 +430,7 @@ describe("GET /api/users/:username", () => {
       });
   });
 
-  test("404, return Not Found when the username passed it is not on the database", () => {
+  test("404, returns Not Found when the username passed it is not on the database", () => {
     return request(app)
       .get(`/api/users/cat`)
       .expect(404)
@@ -558,7 +558,7 @@ describe("GET /api/articles?limit=5&p=2", () => {
       });
   });
 
-  test("400, return Bad Request if the data type for the limit it is incorrect", () => {
+  test("400, returns Bad Request if the data type for the limit it is incorrect", () => {
     return request(app)
       .get("/api/articles?limit=cat")
       .expect(400)
@@ -567,7 +567,7 @@ describe("GET /api/articles?limit=5&p=2", () => {
       });
   });
 
-  test("400, return Bad Request if the data type for the page it is incorrect", () => {
+  test("400, returns Bad Request if the data type for the page it is incorrect", () => {
     return request(app)
       .get("/api/articles?limit=3&p=page")
       .expect(400)
@@ -576,12 +576,59 @@ describe("GET /api/articles?limit=5&p=2", () => {
       });
   });
 
-  test("404, return Not found if the page is too big that there is not articles on it", () => {
+  test("404, returns Not found if the page is too big that there is not articles on it", () => {
     return request(app)
       .get("/api/articles?limit=3&p=200")
       .expect(404)
       .then(({ body }) => {
         expect(body.msg).toBe("Not found");
+      });
+  });
+});
+
+describe("POST /api/topics", () => {
+  test("201, returns an object with the new topic", () => {
+    const newTopic = {
+      slug: "languages",
+      description: "Coding languages as JS, PHP...",
+    };
+
+    return request(app)
+      .post("/api/topics")
+      .send(newTopic)
+      .expect(201)
+      .then(({ body }) => {
+        const { topic } = body;
+        expect(topic.slug).toBe("languages");
+        expect(topic.description).toBe("Coding languages as JS, PHP...");
+      });
+  });
+
+  test("400, returns the Bad Request when there is missing fields", () => {
+    const newTopic = {
+      slug: "languages",
+    };
+
+    return request(app)
+      .post("/api/topics")
+      .send(newTopic)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Bad Request: missing data");
+      });
+  });
+  test("400, returns the Bad Request when the new topic is already on the database", () => {
+    const newTopic = {
+      slug: "paper",
+      description: "2.0 - what books are made of",
+    };
+
+    return request(app)
+      .post("/api/topics")
+      .send(newTopic)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Bad Request: topic duplicated");
       });
   });
 });
