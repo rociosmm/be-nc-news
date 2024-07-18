@@ -29,7 +29,7 @@ exports.fetchArticles = (
   const argumentsArr = [];
 
   const articlesDataToSelect =
-    "articles.article_id, articles.title, articles.topic, articles.author, articles.created_at, articles.votes, articles.article_img_url";
+    "articles.article_id, articles.title, articles.body, articles.topic, articles.author, articles.created_at, articles.votes, articles.article_img_url";
 
   if (
     !allowedSortCols.includes(sort_by) ||
