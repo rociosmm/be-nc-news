@@ -19,9 +19,9 @@ const apiRouter = require("./routes/api-router");
 
 app.use(cors());
 app.use(express.json());
-app.use("/api", apiRouter);
+app.use("/ncnews/api", apiRouter);
 
-app.get("/", (req, res) => res.redirect("/api"));
+app.get("/", (req, res) => res.redirect("/ncnews/api"));
 
 /* all routes in app.js
 app.get("/api", endpointsInfo);
